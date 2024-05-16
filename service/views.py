@@ -15,7 +15,7 @@ from service.permissions import IsAdminOrReadOnly
 class SportGroundViewSet(ModelViewSet):
     queryset = SportGround.objects.all()
     serializer_class = SportGroundSerializer
-    # permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "upload_image":
@@ -46,7 +46,7 @@ class SportGroundViewSet(ModelViewSet):
 
 
 class ReservationViewSet(ModelViewSet):
-    queryset = Reservation.objects.select_related("place").all()
+    queryset = Reservation.objects.select_related("place", "personal_data").all()
     serializer_class = ReservationSerializer
     permission_classes = (IsAuthenticated,)
 
