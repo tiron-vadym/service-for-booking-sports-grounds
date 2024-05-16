@@ -52,6 +52,3 @@ class Reservation(models.Model):
         default=Time.DAY,
         max_length=100
     )
-
-    class Meta:
-        unique_together = ("day", "time")

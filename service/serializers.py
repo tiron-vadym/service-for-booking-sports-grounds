@@ -35,6 +35,16 @@ class ReservationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["personal_data", "created_at"]
 
+    def validate(self, data):
+        existing_reservations = Reservation.objects.filter(day=data["day"], time=data["time"])
+        if self.instance:
+            existing_reservations = existing_reservations.exclude(pk=self.instance.pk)
+
+        if existing_reservations.exists():
+            raise serializers.ValidationError("This combination of day and time is already reserved.")
+
+        return data
+
 
 class ReservationListRetrieveSerializer(ReservationSerializer):
     place = SportGroundSerializer(read_only=True)
