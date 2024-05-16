@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
-from sport_ground.models import SportGround, Reservation
+from service.models import SportGround, Reservation
 
 
 class SportGroundSerializer(serializers.ModelSerializer):
@@ -21,10 +22,20 @@ class SportGroundImageSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
+    place = serializers.SlugRelatedField(slug_field="name", queryset=SportGround.objects.all())
+
     class Meta:
         model = Reservation
         fields = [
-            "name",
+            "place",
             "personal_data",
+            "created_at",
+            "day",
             "time"
         ]
+        read_only_fields = ["personal_data", "created_at"]
+
+
+class ReservationListRetrieveSerializer(ReservationSerializer):
+    place = SportGroundSerializer(read_only=True)
+    personal_data = serializers.SlugRelatedField(slug_field="email", queryset=get_user_model().objects.all())
