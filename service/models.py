@@ -31,32 +31,22 @@ class SportGround(models.Model):
 
 
 class Reservation(models.Model):
-    class Day(models.TextChoices):
-        MONDAY = "MONDAY"
-        TUESDAY = "TUESDAY"
-        WEDNESDAY = "WEDNESDAY"
-        THURSDAY = "THURSDAY"
-        FRIDAY = "FRIDAY"
-
     class Time(models.TextChoices):
         DAY = "Day: 14:00-16:00"
         EVENING = "Evening: 16:00-18:00"
 
-    name = models.ForeignKey(
+    place = models.ForeignKey(
         SportGround,
         on_delete=models.CASCADE,
-        related_name="name_reservations"
+        related_name="reservations"
     )
-    personal_data = models.OneToOneField(
+    personal_data = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name="user_reservations"
+        related_name="users"
     )
-    day = models.CharField(
-        choices=Day.choices,
-        default=Day.MONDAY,
-        max_length=10
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    day = models.DateField()
     time = models.CharField(
         choices=Time.choices,
         default=Time.DAY,
@@ -65,9 +55,3 @@ class Reservation(models.Model):
 
     class Meta:
         unique_together = ("day", "time")
-        # constraints = [
-        #     UniqueConstraints(
-        #         fields=["day", "time"],
-        #         name="reservations_unique"
-        #     ),
-        # ]
