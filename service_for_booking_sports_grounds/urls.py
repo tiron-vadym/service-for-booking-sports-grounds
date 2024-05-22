@@ -35,6 +35,10 @@ urlpatterns = [
         "api/client/",
         include("client.urls", namespace="client"),
     ),
+    path(
+         "api/about/",
+         include("about.urls", namespace="about"),
+    ),
     path("__debug__/", include("debug_toolbar.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

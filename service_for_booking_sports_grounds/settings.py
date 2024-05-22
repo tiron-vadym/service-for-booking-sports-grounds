@@ -30,6 +30,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# SERVER_NAME = "localhost"
+# SERVER_PORT = 8000
 
 # Application definition
 
@@ -43,8 +46,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "debug_toolbar",
     "drf_spectacular",
+    "phonenumber_field",
     "service",
-    "client"
+    "client",
+    "about"
 ]
 
 MIDDLEWARE = [
@@ -170,3 +175,5 @@ SIMPLE_JWT = {
 }
 
 INTERNAL_IPS = ["127.0.0.1"]
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
