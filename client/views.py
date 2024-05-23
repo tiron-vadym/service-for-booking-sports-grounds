@@ -27,6 +27,6 @@ class ListUserView(generics.ListAPIView):
 
 
 class LogoutView(APIView):
-    def post(self, request, format=None):
+    def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)

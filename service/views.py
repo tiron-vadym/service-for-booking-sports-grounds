@@ -26,7 +26,7 @@ from utilities.stripe import stripe_helper
 class SportGroundViewSet(ModelViewSet):
     queryset = SportGround.objects.all()
     serializer_class = SportGroundSerializer
-    # permission_classes = (IsAdminOrReadOnly)
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == "upload_image":
@@ -57,12 +57,20 @@ class SportGroundViewSet(ModelViewSet):
 
                 conflicting_reservations = Reservation.objects.filter(
                     day=date,
-                    time__lte=(datetime.combine(date, time) + timedelta(hours=6)).time(),
+                    time__lte=(datetime.combine(
+                        date,
+                        time
+                    ) + timedelta(hours=6)).time(),
                     place__in=queryset
                 )
                 for reservation in conflicting_reservations:
-                    end_time = (datetime.combine(reservation.day, reservation.time) +
-                                timedelta(hours=reservation.duration_hours)).time()
+                    end_time = (
+                            datetime.combine(
+                                reservation.day,
+                                reservation.time
+                            ) +
+                            timedelta(hours=reservation.duration_hours)
+                    ).time()
                     if time < end_time:
                         queryset = queryset.exclude(id=reservation.place.id)
             except ValueError:
@@ -105,7 +113,10 @@ class SportGroundViewSet(ModelViewSet):
         sport_ground = self.get_object()
         reservations = sport_ground.reservations.all()
         return Response(
-            {"schedule": ScheduleRetrieveSerializer(reservations, many=True).data},
+            {"schedule": ScheduleRetrieveSerializer(
+                reservations,
+                many=True
+            ).data},
             status=status.HTTP_200_OK
         )
 
