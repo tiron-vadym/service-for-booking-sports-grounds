@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "drf_spectacular",
     "phonenumber_field",
+    "rest_framework_simplejwt.token_blacklist",
     "service",
     "client",
     "about"
@@ -172,6 +173,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=365),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 INTERNAL_IPS = ["127.0.0.1"]
