@@ -42,12 +42,12 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-      "api/doc/swagger/",
+      "api/swagger/",
       SpectacularSwaggerView.as_view(url_name="schema"),
       name="swagger",
     ),
     path(
-      "api/doc/redoc/",
+      "api/redoc/",
       SpectacularRedocView.as_view(url_name="redoc"),
       name="redoc",
     ),
