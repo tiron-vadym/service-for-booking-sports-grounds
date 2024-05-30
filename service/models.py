@@ -22,6 +22,20 @@ def sport_ground_image_file_path(
 
 
 class SportGround(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    image = models.ImageField(
+        upload_to=sport_ground_image_file_path,
+        null=True,
+        blank=True
+    )
+    location = models.CharField(max_length=100)
+    phone = PhoneNumberField()
+
+    def __str__(self):
+        return self.name
+
+
+class SportField(models.Model):
     class SportActivity(models.TextChoices):
         SOCCER = "Soccer"
         BASKETBALL = "Basketball"
@@ -29,25 +43,20 @@ class SportGround(models.Model):
         VOLLEYBALL = "Volleyball"
         BADMINTON = "Badminton"
 
-    name = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(
-        upload_to=sport_ground_image_file_path,
-        null=True
+    ground = models.ForeignKey(
+        SportGround,
+        on_delete=models.CASCADE,
+        related_name="fields"
     )
-    location = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
     activity = models.CharField(
         max_length=10,
         choices=SportActivity.choices,
         default=SportActivity.SOCCER,
     )
-    phone = PhoneNumberField()
-
-    class Meta:
-        verbose_name = "sports-grounds"
+    price = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return self.name
+        return self.get_activity_display()
 
 
 def validate_time_in_hours(value):
@@ -57,11 +66,11 @@ def validate_time_in_hours(value):
         raise ValidationError("Time must be in whole hours.")
 
 
-class Reservation(models.Model):
-    place = models.ForeignKey(
-        SportGround,
+class Booking(models.Model):
+    field = models.ForeignKey(
+        SportField,
         on_delete=models.CASCADE,
-        related_name="reservations"
+        related_name="bookings"
     )
     day = models.DateField()
     time = models.TimeField(validators=[validate_time_in_hours])
@@ -89,10 +98,10 @@ class Payment(models.Model):
         choices=PaymentStatus.choices,
         default=PaymentStatus.PENDING,
     )
-    reservation = models.ForeignKey(
-        Reservation,
+    booking = models.ForeignKey(
+        Booking,
         on_delete=models.CASCADE,
-        related_name="reservation_payments"
+        related_name="booking_payments"
     )
     session_url = models.URLField(
         max_length=1000,
