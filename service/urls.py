@@ -3,13 +3,15 @@ from rest_framework import routers
 
 from service.views import (
     SportGroundViewSet,
-    ReservationViewSet,
+    SportFieldViewSet,
+    BookingViewSet,
     PaymentViewSet
 )
 
 router = routers.DefaultRouter()
 router.register("sports-grounds", SportGroundViewSet)
-router.register("reservations", ReservationViewSet)
+router.register("sports-fields", SportFieldViewSet)
+router.register("bookings", BookingViewSet)
 router.register("payments", PaymentViewSet)
 
 urlpatterns = [
