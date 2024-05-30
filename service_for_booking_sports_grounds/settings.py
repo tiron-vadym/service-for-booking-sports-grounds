@@ -29,10 +29,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-# SERVER_NAME = "localhost"
-# SERVER_PORT = 8000
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+SERVER_NAME = "localhost"
+SERVER_PORT = 8000
 
 # Application definition
 
@@ -179,3 +178,11 @@ SIMPLE_JWT = {
 INTERNAL_IPS = ["127.0.0.1"]
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.ukr.net"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "sportspaceservice@ukr.com"
+EMAIL_HOST_PASSWORD = "serviceforbooking"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
