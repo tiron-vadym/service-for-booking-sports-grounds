@@ -24,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "abcd")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "service-for-booking-sports-grounds-3u2f.onrender.com"]
 SERVER_NAME = "localhost"
 SERVER_PORT = 8000
 
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -130,6 +131,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+STATIC_ROOT = "staticfiles/"
+
 AUTH_USER_MODEL = "client.User"
 
 MEDIA_ROOT = BASE_DIR / "media"
@@ -179,10 +182,18 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.ukr.net"
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
+# EMAIL_HOST_USER = "sportspaceservice@ukr.com"
+# EMAIL_HOST_PASSWORD = "serviceforbooking"
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.ukr.net"
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = "sportspaceservice@ukr.com"
-EMAIL_HOST_PASSWORD = "serviceforbooking"
+EMAIL_HOST = "smtp.mailersend.net"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "MS_uNJ3I3@trial-jpzkmgqy992l059v.mlsender.net"
+EMAIL_HOST_PASSWORD = "VLhByptusBPj1WhH"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
