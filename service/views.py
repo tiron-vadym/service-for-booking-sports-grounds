@@ -97,6 +97,7 @@ class SportFieldViewSet(ModelViewSet):
                     ).time()
                     if time < end_time:
                         queryset = queryset.exclude(id=booking.field.id)
+
             except ValueError:
                 return queryset.none()
         return queryset
@@ -149,7 +150,7 @@ class SportFieldViewSet(ModelViewSet):
     @action(detail=True, methods=["GET"])
     def schedule(self, request, pk=None):
         sport_field = self.get_object()
-        bookings = sport_field.bookings.all()
+        bookings = sport_field.bookings.all().select_related()
         return Response(
             {"schedule": ScheduleRetrieveSerializer(
                 bookings,
@@ -174,11 +175,9 @@ class BookingViewSet(ModelViewSet):
         serializer.save(personal_data=self.request.user)
 
     def get_serializer_class(self):
-        serializer_classes = {
-            "list": BookingListRetrieveSerializer,
-            "retrieve": BookingListRetrieveSerializer,
-        }
-        return serializer_classes.get(self.action, BookingSerializer)
+        if self.action in ["list", "retrieve"]:
+            return BookingListRetrieveSerializer
+        return self.serializer_class
 
 
 class PaymentViewSet(ModelViewSet):
@@ -207,10 +206,10 @@ class PaymentViewSet(ModelViewSet):
         booking = serializer.validated_data["booking"]
         payment = stripe_helper(booking)
 
-    #     self.perform_create(serializer)
-        headers = self.get_success_headers(payment)
+        serializer = self.get_serializer(payment[0])
+        headers = self.get_success_headers(serializer.data)
         return Response(
-            payment,
+            serializer.data,
             status=status.HTTP_201_CREATED,
             headers=headers
         )
