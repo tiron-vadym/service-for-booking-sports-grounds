@@ -14,11 +14,14 @@ google-api-core==2.19.0
 google-auth==2.29.0
 google-auth-httplib2==0.2.0
 googleapis-common-protos==1.63.0
+add gunicorn==22.0.0
 httplib2==0.22.0
 idna==3.7
 inflection==0.5.1
 jsonschema==4.22.0
 jsonschema-specifications==2023.12.1
+mailersend==0.5.6
+packaging==24.1
 phonenumbers==8.13.37
 pillow==10.3.0
 proto-plus==1.23.0
@@ -42,3 +45,4 @@ typing_extensions==4.11.0
 tzdata==2024.1
 uritemplate==4.1.1
 urllib3==2.2.1
+whitenoise==6.6.0
