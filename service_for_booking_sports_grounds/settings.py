@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 import os
 
 load_dotenv()
@@ -29,7 +30,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "abcd")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "service-for-booking-sports-grounds-3u2f.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "sportspace.onrender.com"]
 SERVER_NAME = "localhost"
 SERVER_PORT = 8000
 
@@ -96,6 +97,9 @@ DATABASES = {
         "PASSWORD": os.environ["POSTGRES_PASSWORD"],
     }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES["default"].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
