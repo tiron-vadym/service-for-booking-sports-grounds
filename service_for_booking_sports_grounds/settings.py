@@ -186,18 +186,43 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND_STMP = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "smtp.ukr.net"
 # EMAIL_PORT = 465
 # EMAIL_USE_SSL = True
 # EMAIL_HOST_USER = "sportspaceservice@ukr.com"
-# EMAIL_HOST_PASSWORD = "serviceforbooking"
+# EMAIL_HOST_PASSWORD = "2M1HIC2XgSBIByyW"
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.mailersend.net"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "MS_uNJ3I3@trial-jpzkmgqy992l059v.mlsender.net"
-EMAIL_HOST_PASSWORD = "VLhByptusBPj1WhH"
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# sportspaceservice@ukr.com
+# "serviceforbooking"
+
+# send_mail("test", "test", "sportspaceservice@ukr.net", ["servicesportspace@gmail.com"], fail_silently=False)
+# from django.core.mail import send_mail
+
+# EMAIL_PORT = 2525
+# EMAIL_USE_SSL = False
+# EMAIL_USE_TLS = True
+
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
+
+EMAIL_BACKEND = 'django_imap_backend.ImapBackend'
+EMAIL_IMAP_SECRETS = [
+    {
+        'HOST': 'imap.ukr.net',
+        'PORT': 143,  # Порт для SSL
+        'USER': 'booking',  # Повна адреса електронної пошти
+        'PASSWORD': '2M1HIC2XgSBIByyW',  # Пароль до скриньки
+        'MAILBOX': 'INBOX',  # Ім'я папки (INBOX за замовчуванням)
+        'SSL': False  # Використання SSL
+    }
+]
+
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.mailersend.net"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = "MS_uNJ3I3@trial-jpzkmgqy992l059v.mlsender.net"
+# EMAIL_HOST_PASSWORD = "VLhByptusBPj1WhH"
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
