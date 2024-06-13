@@ -163,8 +163,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Sport ground API",
-    "DESCRIPTION": "Reserve sport ground",
+    "TITLE": "SportSpace API",
+    "DESCRIPTION": "Book a sports ground",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTING": {
