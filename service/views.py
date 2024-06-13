@@ -185,7 +185,7 @@ class PaymentViewSet(ModelViewSet):
     queryset = Payment.objects.select_related(
         "booking"
     ).all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = Payment.objects.all()

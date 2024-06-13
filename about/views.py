@@ -8,10 +8,10 @@ from service.permissions import IsAdminOrReadOnly
 class FAQViewSet(ModelViewSet):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer
-    permission_classes = IsAdminOrReadOnly
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class FeedbackViewSet(ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    permission_classes = IsAdminOrReadOnly
+    permission_classes = (IsAdminOrReadOnly,)
