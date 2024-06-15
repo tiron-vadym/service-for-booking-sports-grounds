@@ -41,8 +41,12 @@ class UserManager(DjangoUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
-    first_name = models.CharField(_("first name"), max_length=30, null=True, blank=True)
-    last_name = models.CharField(_("last name"), max_length=30, null=True, blank=True)
+    first_name = models.CharField(
+        _("first name"), max_length=30, null=True, blank=True
+    )
+    last_name = models.CharField(
+        _("last name"), max_length=30, null=True, blank=True
+    )
     date_of_birth = models.DateField(_("date of birth"), null=True, blank=True)
     phone_number = models.CharField(
         _("phone number"),

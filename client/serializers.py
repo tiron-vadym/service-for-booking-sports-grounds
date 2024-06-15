@@ -36,7 +36,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
         password = generate_random_password()
-        user = get_user_model().objects.create_user(password=password, **validated_data)
+        user = get_user_model().objects.create_user(
+            password=password, **validated_data
+        )
 
         response_data = self.to_representation(user)
         response_data["password"] = password
