@@ -11,54 +11,30 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
 from service.serializers import (
-    SportGroundSerializer,
-    SportGroundImageSerializer,
-    SportFieldSerializer,
-    SportFieldListRetrieveSerializer,
-    SportFieldBookingSerializer,
-    SportFieldScheduleSerializer,
+    SportsComplexSerializer,
+    SportsComplexImageSerializer,
+    SportsFieldSerializer,
+    SportsFieldListRetrieveSerializer,
+    SportsFieldBookingSerializer,
+    SportsFieldScheduleSerializer,
     ScheduleRetrieveSerializer,
     BookingSerializer,
     BookingListRetrieveSerializer,
     PaymentSerializer
 )
-from service.models import SportGround, SportField, Booking, Payment
+from service.models import SportsComplex, SportsField, Booking, Payment
 from service.permissions import IsAdminOrReadOnly
 from utilities.stripe import stripe_helper
 
 
-class SportGroundViewSet(ModelViewSet):
-    queryset = SportGround.objects.all()
-    serializer_class = SportGroundSerializer
-    # permission_classes = (IsAdminOrReadOnly,)
+class SportsComplexViewSet(ModelViewSet):
+    queryset = SportsComplex.objects.all()
+    serializer_class = SportsComplexSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "upload_image":
-            return SportGroundImageSerializer
-        return self.serializer_class
-
-    @action(methods=["POST"], detail=True, url_path="upload-image")
-    def upload_image(self, request, pk=None):
-        sport_ground = self.get_object()
-        serializer = self.get_serializer(sport_ground, data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class SportFieldViewSet(ModelViewSet):
-    queryset = SportField.objects.select_related("ground").all()
-    serializer_class = SportFieldSerializer
-    # permission_classes = (IsAdminOrReadOnly,)
-
-    def get_serializer_class(self):
-        if self.action == "booking":
-            return SportFieldBookingSerializer
-        if self.action == "schedule":
-            return SportFieldScheduleSerializer
-        if self.action in ["list", "retrieve"]:
-            return SportFieldListRetrieveSerializer
+            return SportsComplexImageSerializer
         return self.serializer_class
 
     def get_queryset(self):
@@ -69,10 +45,12 @@ class SportFieldViewSet(ModelViewSet):
         date_str = self.request.query_params.get("date")
         time_str = self.request.query_params.get("time")
 
+        field_queryset = SportsField.objects.all()
+
         if activity:
-            queryset = queryset.filter(activity__iexact=activity)
+            field_queryset = field_queryset.filter(activity__iexact=activity)
         if location:
-            queryset = queryset.filter(ground__location__icontains=location)
+            queryset = queryset.filter(location__icontains=location)
 
         if date_str and time_str:
             try:
@@ -81,25 +59,19 @@ class SportFieldViewSet(ModelViewSet):
 
                 conflicting_bookings = Booking.objects.filter(
                     day=date,
-                    time__lte=(datetime.combine(
-                        date,
-                        time
-                    ) + timedelta(hours=6)).time(),
-                    field__in=queryset
+                    time__lte=(datetime.combine(date, time) + timedelta(hours=6)).time()
                 )
+
                 for booking in conflicting_bookings:
-                    end_time = (
-                            datetime.combine(
-                                booking.day,
-                                booking.time
-                            ) +
-                            timedelta(hours=booking.duration_hours)
-                    ).time()
+                    end_time = (datetime.combine(booking.day, booking.time) +
+                                timedelta(hours=booking.hours_slots[0])).time()
                     if time < end_time:
-                        queryset = queryset.exclude(id=booking.field.id)
+                        field_queryset = field_queryset.exclude(id=booking.field.id)
 
             except ValueError:
                 return queryset.none()
+
+        queryset = queryset.filter(fields__in=field_queryset).distinct()
         return queryset
 
     @extend_schema(
@@ -108,30 +80,54 @@ class SportFieldViewSet(ModelViewSet):
                 name="activity",
                 type=OpenApiTypes.STR,
                 location=OpenApiParameter.QUERY,
-                description="Filter sports grounds by activity",
+                description="Filter sports complexes by activity",
             ),
             OpenApiParameter(
                 name="location",
                 type=OpenApiTypes.STR,
                 location=OpenApiParameter.QUERY,
-                description="Filter sports grounds by location",
+                description="Filter sports complexes by location",
             ),
             OpenApiParameter(
                 name="date",
                 type=OpenApiTypes.DATE,
                 location=OpenApiParameter.QUERY,
-                description="Filter sports grounds by date",
+                description="Filter sports complex by date",
             ),
             OpenApiParameter(
                 name="time",
                 type=OpenApiTypes.TIME,
                 location=OpenApiParameter.QUERY,
-                description="Filter sports grounds by time",
+                description="Filter sports complexes by time",
             ),
         ]
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @action(methods=["POST"], detail=True, url_path="upload-image")
+    def upload_image(self, request, pk=None):
+        sports_complex = self.get_object()
+        serializer = self.get_serializer(sports_complex, data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SportsFieldViewSet(ModelViewSet):
+    queryset = SportsField.objects.select_related("complex").all()
+    serializer_class = SportsFieldSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "booking":
+            return SportsFieldBookingSerializer
+        if self.action == "schedule":
+            return SportsFieldScheduleSerializer
+        if self.action in ["list", "retrieve"]:
+            return SportsFieldListRetrieveSerializer
+        return self.serializer_class
 
     @action(
         methods=["POST"],
@@ -140,17 +136,17 @@ class SportFieldViewSet(ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def booking(self, request, pk=None):
-        sport_field = self.get_object()
+        sports_field = self.get_object()
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
-        serializer.save(field=sport_field, personal_data=request.user)
+        serializer.save(field=sports_field, personal_data=request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["GET"])
     def schedule(self, request, pk=None):
-        sport_field = self.get_object()
-        bookings = sport_field.bookings.all().select_related()
+        sports_field = self.get_object()
+        bookings = sports_field.bookings.all().select_related()
         return Response(
             {"schedule": ScheduleRetrieveSerializer(
                 bookings,
