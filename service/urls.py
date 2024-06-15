@@ -2,15 +2,15 @@ from django.urls import path, include
 from rest_framework import routers
 
 from service.views import (
-    SportGroundViewSet,
-    SportFieldViewSet,
+    SportsComplexViewSet,
+    SportsFieldViewSet,
     BookingViewSet,
     PaymentViewSet
 )
 
 router = routers.DefaultRouter()
-router.register("sports-grounds", SportGroundViewSet)
-router.register("sports-fields", SportFieldViewSet)
+router.register("sports-complexes", SportsComplexViewSet)
+router.register("sports-fields", SportsFieldViewSet)
 router.register("bookings", BookingViewSet)
 router.register("payments", PaymentViewSet)
 

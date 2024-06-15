@@ -29,7 +29,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path(
         "api/service/",
-        include("service.urls", namespace="sport-ground")
+        include("service.urls", namespace="service")
     ),
     path(
         "api/client/",

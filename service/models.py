@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import time
 
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -10,21 +10,21 @@ from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-def sport_ground_image_file_path(
-        instance: "SportGround",
+def sports_complex_image_file_path(
+        instance: "SportsComplex",
         filename: str
 ) -> str:
     _, extension = os.path.splitext(filename)
 
     filename = f"{slugify(instance.name)}-{uuid.uuid4()}.{extension}"
 
-    return os.path.join("uploads", "sports-grounds", filename)
+    return os.path.join("uploads", "sports-complexes", filename)
 
 
-class SportGround(models.Model):
+class SportsComplex(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
-        upload_to=sport_ground_image_file_path,
+        upload_to=sports_complex_image_file_path,
         null=True,
         blank=True
     )
@@ -35,23 +35,23 @@ class SportGround(models.Model):
         return self.name
 
 
-class SportField(models.Model):
-    class SportActivity(models.TextChoices):
+class SportsField(models.Model):
+    class SportsActivity(models.TextChoices):
         SOCCER = "Soccer"
         BASKETBALL = "Basketball"
         TENNIS = "Tennis"
         VOLLEYBALL = "Volleyball"
         BADMINTON = "Badminton"
 
-    ground = models.ForeignKey(
-        SportGround,
+    complex = models.ForeignKey(
+        SportsComplex,
         on_delete=models.CASCADE,
         related_name="fields"
     )
     activity = models.CharField(
         max_length=10,
-        choices=SportActivity.choices,
-        default=SportActivity.SOCCER,
+        choices=SportsActivity.choices,
+        default=SportsActivity.SOCCER,
     )
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
@@ -68,15 +68,13 @@ def validate_time_in_hours(value):
 
 class Booking(models.Model):
     field = models.ForeignKey(
-        SportField,
+        SportsField,
         on_delete=models.CASCADE,
         related_name="bookings"
     )
     day = models.DateField()
     time = models.TimeField(validators=[validate_time_in_hours])
-    duration_hours = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(6)]
-    )
+    hours_slots = ArrayField(models.IntegerField())
     created_at = models.DateTimeField(auto_now_add=True)
     personal_data = models.ForeignKey(
         get_user_model(),

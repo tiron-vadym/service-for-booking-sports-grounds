@@ -2,16 +2,16 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from service.models import (
-    SportGround,
-    SportField,
+    SportsComplex,
+    SportsField,
     Booking,
     Payment
 )
 
 
-class SportGroundSerializer(serializers.ModelSerializer):
+class SportsComplexSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SportGround
+        model = SportsComplex
         fields = [
             "id",
             "name",
@@ -21,34 +21,34 @@ class SportGroundSerializer(serializers.ModelSerializer):
         ]
 
 
-class SportGroundImageSerializer(serializers.ModelSerializer):
+class SportsComplexImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SportGround
+        model = SportsComplex
         fields = [
             "id",
             "image"
         ]
 
 
-class SportFieldSerializer(serializers.ModelSerializer):
+class SportsFieldSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SportField
+        model = SportsField
         fields = [
             "id",
-            "ground",
+            "complex",
             "activity",
             "price"
         ]
 
 
-class SportFieldListRetrieveSerializer(SportFieldSerializer):
-    ground = serializers.SlugRelatedField(
+class SportsFieldListRetrieveSerializer(SportsFieldSerializer):
+    complex = serializers.SlugRelatedField(
         slug_field="name",
-        queryset=SportGround.objects.all()
+        queryset=SportsComplex.objects.all()
     )
 
 
-class SportFieldBookingSerializer(serializers.ModelSerializer):
+class SportsFieldBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = [
@@ -56,18 +56,18 @@ class SportFieldBookingSerializer(serializers.ModelSerializer):
             "field",
             "day",
             "time",
-            "duration_hours",
+            "hours_slots",
             "created_at",
             "personal_data"
         ]
         read_only_fields = ["field", "personal_data", "created_at"]
 
 
-class SportFieldScheduleSerializer(serializers.ModelSerializer):
+class SportsFieldScheduleSerializer(serializers.ModelSerializer):
     schedule = serializers.SerializerMethodField()
 
     class Meta:
-        model = SportField
+        model = SportsField
         fields = [
             "id",
             "schedule"
@@ -80,7 +80,7 @@ class SportFieldScheduleSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     field = serializers.SlugRelatedField(
         slug_field="activity",
-        queryset=SportField.objects.all()
+        queryset=SportsField.objects.all()
     )
 
     class Meta:
@@ -90,7 +90,7 @@ class BookingSerializer(serializers.ModelSerializer):
             "field",
             "day",
             "time",
-            "duration_hours",
+            "hours_slots",
             "created_at",
             "personal_data"
         ]
@@ -105,7 +105,7 @@ class ScheduleRetrieveSerializer(BookingSerializer):
 
 
 class BookingListRetrieveSerializer(BookingSerializer):
-    field = SportFieldSerializer(read_only=True)
+    field = SportsFieldSerializer(read_only=True)
     personal_data = serializers.SlugRelatedField(
         slug_field="email",
         queryset=get_user_model().objects.all()

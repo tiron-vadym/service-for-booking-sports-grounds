@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from service.models import SportGround, Booking
+from service.models import SportsComplex, SportsField, Booking
 
 
-admin.site.register(SportGround)
+admin.site.register(SportsComplex)
+admin.site.register(SportsField)
 admin.site.register(Booking)
