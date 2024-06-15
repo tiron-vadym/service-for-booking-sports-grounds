@@ -29,8 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
             "is_staff",
         )
         extra_kwargs = {
-            "first_name": {"required": True, "min_length": 2},
-            "last_name": {"required": True, "min_length": 2},
+            "first_name": {"min_length": 2},
+            "last_name": {"min_length": 2},
         }
 
     def create(self, validated_data):
