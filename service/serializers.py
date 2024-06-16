@@ -9,7 +9,19 @@ from service.models import (
 )
 
 
+class SportsFieldComplexSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SportsField
+        fields = [
+            "id",
+            "activity",
+            "price"
+        ]
+
+
 class SportsComplexSerializer(serializers.ModelSerializer):
+    fields = SportsFieldComplexSerializer(many=True, read_only=False, required=False)
+
     class Meta:
         model = SportsComplex
         fields = [
@@ -17,8 +29,16 @@ class SportsComplexSerializer(serializers.ModelSerializer):
             "name",
             "image",
             "location",
-            "phone"
+            "phone",
+            "fields"
         ]
+
+    def create(self, validated_data):
+        fields_data = validated_data.pop("fields")
+        complex = SportsComplex.objects.create(**validated_data)
+        for field in fields_data:
+            SportsField.objects.create(complex=complex, **field)
+            return complex
 
 
 class SportsComplexImageSerializer(serializers.ModelSerializer):
