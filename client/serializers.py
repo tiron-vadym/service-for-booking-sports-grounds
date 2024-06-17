@@ -23,10 +23,12 @@ class UserSerializer(serializers.ModelSerializer):
             "date_of_birth",
             "phone_number",
             "gender",
+            "password"
         ]
         read_only_fields = (
             "id",
             "is_staff",
+            "password"
         )
         extra_kwargs = {
             "first_name": {"min_length": 2},
@@ -36,8 +38,10 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
         password = generate_random_password()
+        validated_data["password"] = password
+
         user = get_user_model().objects.create_user(
-            password=password, **validated_data
+            **validated_data
         )
 
         response_data = self.to_representation(user)
