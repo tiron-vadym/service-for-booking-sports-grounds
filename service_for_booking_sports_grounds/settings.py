@@ -193,7 +193,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://sport-space.vercel.app/"
+    "https://sport-space.vercel.app"
 ]
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
