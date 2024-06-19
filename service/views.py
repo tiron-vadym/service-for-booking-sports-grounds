@@ -50,7 +50,7 @@ class SportsComplexViewSet(ModelViewSet):
         if activity:
             field_queryset = field_queryset.filter(activity__iexact=activity)
         if location:
-            queryset = queryset.filter(location__icontains=location)
+            queryset = queryset.filter(location__iexact=location)
 
         if date_str and time_str:
             try:

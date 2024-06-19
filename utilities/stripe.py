@@ -13,7 +13,7 @@ def calculate_total_amount(
         booking: Booking
 ) -> int:
     price_cents = booking.field.price * 100
-    looking_price = int(price_cents) * booking.duration_hours
+    looking_price = int(price_cents)
 
     return stripe.Price.create(
         product="prod_Pz5uWC2BXMLDzx",
