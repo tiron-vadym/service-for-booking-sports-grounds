@@ -1,0 +1,207 @@
+[
+  {
+    "model": "service.sportscomplex",
+    "pk": 1,
+    "fields": {
+      "name": "Complex 1",
+      "image": null,
+      "location": "Kyiv",
+      "phone": "+380123456789"
+    }
+  },
+  {
+    "model": "service.sportscomplex",
+    "pk": 2,
+    "fields": {
+      "name": "Complex 2",
+      "image": null,
+      "location": "Lviv",
+      "phone": "+380987654321"
+    }
+  },
+  {
+    "model": "service.sportscomplex",
+    "pk": 3,
+    "fields": {
+      "name": "Complex 3",
+      "image": null,
+      "location": "Odesa",
+      "phone": "+380456789123"
+    }
+  },
+  {
+    "model": "service.sportscomplex",
+    "pk": 4,
+    "fields": {
+      "name": "Complex 4",
+      "image": null,
+      "location": "Kyiv",
+      "phone": "+380321654987"
+    }
+  },
+  {
+    "model": "service.sportscomplex",
+    "pk": 5,
+    "fields": {
+      "name": "Complex 5",
+      "image": null,
+      "location": "Lviv",
+      "phone": "+380654987321"
+    }
+  },
+  {
+    "model": "service.sportsfield",
+    "pk": 1,
+    "fields": {
+      "complex": 1,
+      "activity": "Football",
+      "price": "100.00"
+    }
+  },
+  {
+    "model": "service.sportsfield",
+    "pk": 2,
+    "fields": {
+      "complex": 1,
+      "activity": "Basketball",
+      "price": "150.00"
+    }
+  },
+  {
+    "model": "service.sportsfield",
+    "pk": 3,
+    "fields": {
+      "complex": 2,
+      "activity": "Tennis",
+      "price": "200.00"
+    }
+  },
+  {
+    "model": "service.sportsfield",
+    "pk": 4,
+    "fields": {
+      "complex": 3,
+      "activity": "Volleyball",
+      "price": "120.00"
+    }
+  },
+  {
+    "model": "service.sportsfield",
+    "pk": 5,
+    "fields": {
+      "complex": 4,
+      "activity": "Badminton",
+      "price": "80.00"
+    }
+  },
+  {
+    "model": "service.booking",
+    "pk": 1,
+    "fields": {
+      "field": 1,
+      "day": "2024-07-01",
+      "time": "10:00:00",
+      "created_at": "2024-06-03T00:00:00Z",
+      "personal_data": 1
+    }
+  },
+  {
+    "model": "service.booking",
+    "pk": 2,
+    "fields": {
+      "field": 2,
+      "day": "2024-07-02",
+      "time": "11:00:00",
+      "created_at": "2024-06-03T00:00:00Z",
+      "personal_data": 3
+    }
+  },
+  {
+    "model": "service.booking",
+    "pk": 3,
+    "fields": {
+      "field": 3,
+      "day": "2024-07-03",
+      "time": "12:00:00",
+      "created_at": "2024-06-03T00:00:00Z",
+      "personal_data": 3
+    }
+  },
+  {
+    "model": "service.booking",
+    "pk": 4,
+    "fields": {
+      "field": 4,
+      "day": "2024-07-04",
+      "time": "13:00:00",
+      "created_at": "2024-06-03T00:00:00Z",
+      "personal_data": 4
+    }
+  },
+  {
+    "model": "service.booking",
+    "pk": 5,
+    "fields": {
+      "field": 5,
+      "day": "2024-07-05",
+      "time": "14:00:00",
+      "created_at": "2024-06-03T00:00:00Z",
+      "personal_data": 9
+    }
+  },
+  {
+    "model": "service.payment",
+    "pk": 1,
+    "fields": {
+      "status": "PENDING",
+      "booking": 1,
+      "session_url": "http://127.0.0.1:8000",
+      "session_id": "sess1",
+      "money_to_pay": "100.00"
+    }
+  },
+  {
+    "model": "service.payment",
+    "pk": 2,
+    "fields": {
+      "status": "PAID",
+      "booking": 2,
+      "session_url": "http://127.0.0.1:8000",
+      "session_id": "sess2",
+      "money_to_pay": "150.00"
+    }
+  },
+  {
+    "model": "service.payment",
+    "pk": 3,
+    "fields": {
+      "status": "PENDING",
+      "booking": 3,
+      "session_url": "http://127.0.0.1:8000",
+      "session_id": "sess3",
+      "money_to_pay": "200.00"
+    }
+  },
+  {
+    "model": "service.payment",
+    "pk": 4,
+    "fields": {
+      "status": "PAID",
+      "booking": 4,
+      "session_url": "http://127.0.0.1:8000",
+      "session_id": "sess4",
+      "money_to_pay": "120.00"
+    }
+  },
+  {
+    "model": "service.payment",
+    "pk": 5,
+    "fields": {
+      "status": "PENDING",
+      "booking": 5,
+      "session_url": "http://127.0.0.1:8000",
+      "session_id": "sess5",
+      "money_to_pay": "80.00"
+    }
+  }
+]
