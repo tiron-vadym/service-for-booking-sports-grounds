@@ -38,6 +38,7 @@ class SportsComplex(models.Model):
         choices=SportsLocation.choices,
         default=SportsLocation.Kyiv,
     )
+    address = models.CharField(max_length=100, unique=True)
     phone = PhoneNumberField()
 
     def __str__(self):
