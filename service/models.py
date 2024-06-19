@@ -22,13 +22,22 @@ def sports_complex_image_file_path(
 
 
 class SportsComplex(models.Model):
+    class SportsLocation(models.TextChoices):
+        Kyiv = "Kyiv"
+        Lviv = "Lviv"
+        Odesa = "Odesa"
+
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
         upload_to=sports_complex_image_file_path,
         null=True,
         blank=True
     )
-    location = models.CharField(max_length=100)
+    location = models.CharField(
+        max_length=10,
+        choices=SportsLocation.choices,
+        default=SportsLocation.Kyiv,
+    )
     phone = PhoneNumberField()
 
     def __str__(self):
@@ -37,7 +46,7 @@ class SportsComplex(models.Model):
 
 class SportsField(models.Model):
     class SportsActivity(models.TextChoices):
-        SOCCER = "Soccer"
+        Football = "Football"
         BASKETBALL = "Basketball"
         TENNIS = "Tennis"
         VOLLEYBALL = "Volleyball"
@@ -51,7 +60,7 @@ class SportsField(models.Model):
     activity = models.CharField(
         max_length=10,
         choices=SportsActivity.choices,
-        default=SportsActivity.SOCCER,
+        default=SportsActivity.Football,
     )
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
@@ -74,7 +83,6 @@ class Booking(models.Model):
     )
     day = models.DateField()
     time = models.TimeField(validators=[validate_time_in_hours])
-    hours_slots = ArrayField(models.IntegerField())
     created_at = models.DateTimeField(auto_now_add=True)
     personal_data = models.ForeignKey(
         get_user_model(),
