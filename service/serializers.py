@@ -76,7 +76,6 @@ class SportsFieldBookingSerializer(serializers.ModelSerializer):
             "field",
             "day",
             "time",
-            "hours_slots",
             "created_at",
             "personal_data"
         ]
@@ -110,7 +109,6 @@ class BookingSerializer(serializers.ModelSerializer):
             "field",
             "day",
             "time",
-            "hours_slots",
             "created_at",
             "personal_data"
         ]

@@ -66,7 +66,7 @@ class SportsComplexViewSet(ModelViewSet):
 
                 for booking in conflicting_bookings:
                     end_time = (datetime.combine(booking.day, booking.time) +
-                                timedelta(hours=booking.hours_slots[0])).time()
+                                timedelta(hours=1)).time()
                     if time < end_time:
                         field_queryset = field_queryset.exclude(
                             id=booking.field.id
