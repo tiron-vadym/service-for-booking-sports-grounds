@@ -2,7 +2,6 @@ import os
 import uuid
 from datetime import time
 
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
