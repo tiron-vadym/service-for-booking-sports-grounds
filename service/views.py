@@ -12,14 +12,13 @@ from rest_framework.permissions import IsAuthenticated
 
 from service.serializers import (
     SportsComplexSerializer,
+    SportsComplexRetrieveSerializer,
     SportsComplexImageSerializer,
     SportsFieldSerializer,
-    SportsFieldListRetrieveSerializer,
     SportsFieldBookingSerializer,
     SportsFieldScheduleSerializer,
     ScheduleRetrieveSerializer,
     BookingSerializer,
-    BookingListRetrieveSerializer,
     PaymentSerializer
 )
 from service.models import SportsComplex, SportsField, Booking, Payment
@@ -33,6 +32,8 @@ class SportsComplexViewSet(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SportsComplexRetrieveSerializer
         if self.action == "upload_image":
             return SportsComplexImageSerializer
         return self.serializer_class
@@ -44,6 +45,9 @@ class SportsComplexViewSet(ModelViewSet):
         location = self.request.query_params.get("location")
         date_str = self.request.query_params.get("date")
         time_str = self.request.query_params.get("time")
+
+        if self.action == "retrieve":
+            queryset = queryset.prefetch_related("fields__bookings")
 
         field_queryset = SportsField.objects.all()
 
@@ -129,8 +133,6 @@ class SportsFieldViewSet(ModelViewSet):
             return SportsFieldBookingSerializer
         if self.action == "schedule":
             return SportsFieldScheduleSerializer
-        if self.action in ["list", "retrieve"]:
-            return SportsFieldListRetrieveSerializer
         return self.serializer_class
 
     @action(
@@ -173,11 +175,6 @@ class BookingViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(personal_data=self.request.user)
-
-    def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:
-            return BookingListRetrieveSerializer
-        return self.serializer_class
 
 
 class PaymentViewSet(ModelViewSet):

@@ -20,7 +20,11 @@ class SportsFieldComplexSerializer(serializers.ModelSerializer):
 
 
 class SportsComplexSerializer(serializers.ModelSerializer):
-    fields = SportsFieldComplexSerializer(many=True, read_only=False, required=False)
+    fields = SportsFieldComplexSerializer(
+        many=True,
+        read_only=False,
+        required=False
+    )
 
     class Meta:
         model = SportsComplex
@@ -61,13 +65,6 @@ class SportsFieldSerializer(serializers.ModelSerializer):
         ]
 
 
-class SportsFieldListRetrieveSerializer(SportsFieldSerializer):
-    complex = serializers.SlugRelatedField(
-        slug_field="name",
-        queryset=SportsComplex.objects.all()
-    )
-
-
 class SportsFieldBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
@@ -97,6 +94,39 @@ class SportsFieldScheduleSerializer(serializers.ModelSerializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "field",
+            "day",
+            "time",
+            "created_at",
+            "personal_data"
+        ]
+
+
+class SportsComplexRetrieveSerializer(SportsComplexSerializer):
+    bookings = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SportsComplex
+        fields = [
+            "id",
+            "name",
+            "image",
+            "location",
+            "phone",
+            "bookings"
+        ]
+
+    def get_bookings(self, obj):
+        fields = obj.fields.all()
+        bookings = Booking.objects.filter(field__in=fields)
+        return BookingSerializer(bookings, many=True).data
+
+
+class BookingRetrieveSerializer(serializers.ModelSerializer):
     field = serializers.SlugRelatedField(
         slug_field="activity",
         queryset=SportsField.objects.all()
@@ -115,15 +145,7 @@ class BookingSerializer(serializers.ModelSerializer):
         read_only_fields = ["field", "personal_data", "created_at"]
 
 
-class ScheduleRetrieveSerializer(BookingSerializer):
-    personal_data = serializers.SlugRelatedField(
-        slug_field="email",
-        queryset=get_user_model().objects.all()
-    )
-
-
-class BookingListRetrieveSerializer(BookingSerializer):
-    field = SportsFieldSerializer(read_only=True)
+class ScheduleRetrieveSerializer(BookingRetrieveSerializer):
     personal_data = serializers.SlugRelatedField(
         slug_field="email",
         queryset=get_user_model().objects.all()
