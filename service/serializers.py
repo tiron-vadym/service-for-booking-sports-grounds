@@ -106,8 +106,33 @@ class BookingSerializer(serializers.ModelSerializer):
         ]
 
 
+class BookingCustomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "day",
+            "time",
+            "created_at",
+            "personal_data"
+        ]
+
+
+class SportsFieldWithBookingsSerializer(serializers.ModelSerializer):
+    bookings = BookingCustomSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = SportsField
+        fields = [
+            "id",
+            "activity",
+            "price",
+            "bookings"
+        ]
+
+
 class SportsComplexRetrieveSerializer(SportsComplexSerializer):
-    bookings = serializers.SerializerMethodField()
+    fields = SportsFieldWithBookingsSerializer(many=True, read_only=True)
 
     class Meta:
         model = SportsComplex
@@ -117,13 +142,9 @@ class SportsComplexRetrieveSerializer(SportsComplexSerializer):
             "image",
             "location",
             "phone",
-            "bookings"
+            "address",
+            "fields"
         ]
-
-    def get_bookings(self, obj):
-        fields = obj.fields.all()
-        bookings = Booking.objects.filter(field__in=fields)
-        return BookingSerializer(bookings, many=True).data
 
 
 class BookingRetrieveSerializer(serializers.ModelSerializer):
