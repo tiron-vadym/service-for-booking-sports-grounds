@@ -5,7 +5,8 @@ from service.models import (
     SportsComplex,
     SportsField,
     Booking,
-    Payment
+    Payment,
+    validate_time_in_hours
 )
 
 
@@ -33,16 +34,18 @@ class SportsComplexSerializer(serializers.ModelSerializer):
             "name",
             "image",
             "location",
+            "address",
             "phone",
             "fields"
         ]
 
     def create(self, validated_data):
-        fields_data = validated_data.pop("fields")
+        fields_data = validated_data.pop("fields", None)
         complex = SportsComplex.objects.create(**validated_data)
-        for field in fields_data:
-            SportsField.objects.create(complex=complex, **field)
-            return complex
+        if fields_data:
+            for field in fields_data:
+                SportsField.objects.create(complex=complex, **field)
+        return complex
 
 
 class SportsComplexImageSerializer(serializers.ModelSerializer):
@@ -66,6 +69,10 @@ class SportsFieldSerializer(serializers.ModelSerializer):
 
 
 class SportsFieldBookingSerializer(serializers.ModelSerializer):
+    time = serializers.ListField(
+        child=serializers.TimeField(validators=[validate_time_in_hours])
+    )
+
     class Meta:
         model = Booking
         fields = [
@@ -77,6 +84,25 @@ class SportsFieldBookingSerializer(serializers.ModelSerializer):
             "personal_data"
         ]
         read_only_fields = ["field", "personal_data", "created_at"]
+
+    def create(self, validated_data):
+        time_data = validated_data.pop("time", [])
+        bookings = []
+        for time in time_data:
+            booking = Booking.objects.create(time=time, **validated_data)
+            bookings.append(booking)
+        return bookings
+
+    def to_representation(self, instance):
+        if isinstance(instance, list):
+            return [super(
+                SportsFieldBookingSerializer,
+                self
+            ).to_representation(item) for item in instance]
+        return super(
+            SportsFieldBookingSerializer,
+            self
+        ).to_representation(instance)
 
 
 class SportsFieldScheduleSerializer(serializers.ModelSerializer):
