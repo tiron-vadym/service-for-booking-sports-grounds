@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework.validators import UniqueTogetherValidator
 
 from service.models import (
     SportsComplex,
@@ -68,7 +69,40 @@ class SportsFieldSerializer(serializers.ModelSerializer):
         ]
 
 
-class SportsFieldBookingSerializer(serializers.ModelSerializer):
+class SportsFieldScheduleSerializer(serializers.ModelSerializer):
+    schedule = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SportsField
+        fields = [
+            "id",
+            "schedule"
+        ]
+
+    def get_schedule(self, obj):
+        return Booking.objects.filter(field=obj)
+
+
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "field",
+            "day",
+            "time",
+            "created_at",
+            "personal_data"
+        ]
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Booking.objects.all(),
+                fields=["field", "day", "time"]
+            )
+        ]
+
+
+class SportsFieldBookingSerializer(BookingSerializer):
     time = serializers.ListField(
         child=serializers.TimeField(validators=[validate_time_in_hours])
     )
@@ -103,33 +137,6 @@ class SportsFieldBookingSerializer(serializers.ModelSerializer):
             SportsFieldBookingSerializer,
             self
         ).to_representation(instance)
-
-
-class SportsFieldScheduleSerializer(serializers.ModelSerializer):
-    schedule = serializers.SerializerMethodField()
-
-    class Meta:
-        model = SportsField
-        fields = [
-            "id",
-            "schedule"
-        ]
-
-    def get_schedule(self, obj):
-        return Booking.objects.filter(field=obj)
-
-
-class BookingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Booking
-        fields = [
-            "id",
-            "field",
-            "day",
-            "time",
-            "created_at",
-            "personal_data"
-        ]
 
 
 class BookingCustomSerializer(serializers.ModelSerializer):

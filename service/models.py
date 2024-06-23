@@ -90,6 +90,14 @@ class Booking(models.Model):
         related_name="users"
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["field", "day", "time"],
+                name="unique_booking"
+            )
+        ]
+
     def __str__(self):
         return f"{self.personal_data} - {self.day} - {self.time}"
 
