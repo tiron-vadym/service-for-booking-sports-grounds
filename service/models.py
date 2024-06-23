@@ -69,8 +69,8 @@ class SportsField(models.Model):
 
 
 def validate_time_in_hours(value):
-    if not (time(10, 0) <= value <= time(21, 0)):
-        raise ValidationError("Time must be between 10:00 and 21:00.")
+    if not (time(8, 0) <= value <= time(21, 0)):
+        raise ValidationError("Time must be between 8:00 and 21:00.")
     if value.minute != 0 or value.second != 0:
         raise ValidationError("Time must be in whole hours.")
 
