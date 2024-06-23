@@ -57,3 +57,18 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
 
         return user
+
+
+class MeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "is_staff",
+            "date_of_birth",
+            "phone_number",
+            "gender",
+        ]

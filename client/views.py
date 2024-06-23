@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from client.serializers import UserSerializer
+from client.serializers import UserSerializer, MeSerializer
 from client.models import User
 
 
@@ -14,7 +14,7 @@ class CreateUserView(generics.CreateAPIView):
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = MeSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
