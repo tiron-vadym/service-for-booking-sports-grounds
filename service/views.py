@@ -147,7 +147,10 @@ class SportsFieldViewSet(ModelViewSet):
 
         serializer.is_valid(raise_exception=True)
         serializer.save(field=sports_field, personal_data=request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.to_representation(serializer.created_bookings),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=["GET"])
     def schedule(self, request, pk=None):

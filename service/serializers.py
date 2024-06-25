@@ -106,6 +106,7 @@ class SportsFieldBookingSerializer(BookingSerializer):
     time = serializers.ListField(
         child=serializers.TimeField(validators=[validate_time_in_hours])
     )
+    created_bookings = None
 
     class Meta:
         model = Booking
@@ -125,14 +126,12 @@ class SportsFieldBookingSerializer(BookingSerializer):
         for time in time_data:
             booking = Booking.objects.create(time=time, **validated_data)
             bookings.append(booking)
+        self.created_bookings = bookings
         return bookings
 
     def to_representation(self, instance):
         if isinstance(instance, list):
-            return [super(
-                SportsFieldBookingSerializer,
-                self
-            ).to_representation(item) for item in instance]
+            return [BookingSerializer(item).data for item in instance]
         return super(
             SportsFieldBookingSerializer,
             self
