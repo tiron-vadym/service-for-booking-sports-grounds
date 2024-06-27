@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework.validators import UniqueTogetherValidator
+from django.db import transaction
 
 from service.models import (
     SportsComplex,
@@ -102,9 +103,14 @@ class BookingSerializer(serializers.ModelSerializer):
         ]
 
 
+class DayTimeSerializer(serializers.Serializer):
+    day = serializers.DateField()
+    time = serializers.TimeField(validators=[validate_time_in_hours])
+
+
 class SportsFieldBookingSerializer(BookingSerializer):
-    time = serializers.ListField(
-        child=serializers.TimeField(validators=[validate_time_in_hours])
+    day_time_slots = serializers.ListField(
+        child=DayTimeSerializer()
     )
     created_bookings = None
 
@@ -113,19 +119,22 @@ class SportsFieldBookingSerializer(BookingSerializer):
         fields = [
             "id",
             "field",
-            "day",
-            "time",
+            "day_time_slots",
             "created_at",
             "personal_data"
         ]
         read_only_fields = ["field", "personal_data", "created_at"]
 
     def create(self, validated_data):
-        time_data = validated_data.pop("time", [])
+        day_time_slots_data = validated_data.pop("day_time_slots", [])
         bookings = []
-        for time in time_data:
-            booking = Booking.objects.create(time=time, **validated_data)
-            bookings.append(booking)
+
+        with transaction.atomic():
+            for day_time_slot in day_time_slots_data:
+                day = day_time_slot["day"]
+                time = day_time_slot["time"]
+                booking = Booking.objects.create(day=day, time=time, **validated_data)
+                bookings.append(booking)
         self.created_bookings = bookings
         return bookings
 
