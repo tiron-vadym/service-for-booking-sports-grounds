@@ -105,10 +105,12 @@ class BookingSerializer(serializers.ModelSerializer):
 
 class DayTimeSerializer(serializers.Serializer):
     day = serializers.DateField()
-    time = serializers.TimeField(validators=[validate_time_in_hours])
+    time = serializers.ListField(
+        child=serializers.TimeField(validators=[validate_time_in_hours])
+    )
 
 
-class SportsFieldBookingSerializer(BookingSerializer):
+class SportsFieldBookingSerializer(serializers.ModelSerializer):
     day_time_slots = serializers.ListField(
         child=DayTimeSerializer()
     )
@@ -132,9 +134,10 @@ class SportsFieldBookingSerializer(BookingSerializer):
         with transaction.atomic():
             for day_time_slot in day_time_slots_data:
                 day = day_time_slot["day"]
-                time = day_time_slot["time"]
-                booking = Booking.objects.create(day=day, time=time, **validated_data)
-                bookings.append(booking)
+                for time in day_time_slot["time"]:
+                    booking = Booking.objects.create(day=day, time=time, **validated_data)
+                    bookings.append(booking)
+
         self.created_bookings = bookings
         return bookings
 
