@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 import stripe
 from django.db import transaction
+from django.db.models import Q
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
@@ -54,26 +55,31 @@ class SportsComplexViewSet(ModelViewSet):
         if location:
             queryset = queryset.filter(location__iexact=location)
 
-        if date_str and time_str:
+        if date_str:
             try:
                 date = datetime.strptime(date_str, "%Y-%m-%d").date()
-                time = datetime.strptime(time_str, "%H:%M").time()
+                conflicting_bookings_date = Booking.objects.filter(day=date)
+                for booking in conflicting_bookings_date:
+                    field_queryset = field_queryset.exclude(
+                        id=booking.field.id
+                    )
+            except ValueError:
+                return queryset.none()
 
-                conflicting_bookings = Booking.objects.filter(
-                    day=date,
-                    time__lte=(
-                            datetime.combine(date, time) + timedelta(hours=6)
-                    ).time()
+        if time_str:
+            try:
+                time = datetime.strptime(time_str, "%H:%M").time()
+                conflicting_bookings_time = Booking.objects.filter(
+                    Q(time__lte=(datetime.combine(datetime.today(), time)
+                                 + timedelta(hours=1)).time())
+                    & Q(time__gte=(datetime.combine(datetime.today(), time)
+                                   - timedelta(hours=1)).time())
                 )
 
-                for booking in conflicting_bookings:
-                    end_time = (datetime.combine(booking.day, booking.time) +
-                                timedelta(hours=1)).time()
-                    if time < end_time:
-                        field_queryset = field_queryset.exclude(
-                            id=booking.field.id
-                        )
-
+                for booking in conflicting_bookings_time:
+                    field_queryset = field_queryset.exclude(
+                        id=booking.field.id
+                    )
             except ValueError:
                 return queryset.none()
 
