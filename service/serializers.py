@@ -70,20 +70,6 @@ class SportsFieldSerializer(serializers.ModelSerializer):
         ]
 
 
-class SportsFieldScheduleSerializer(serializers.ModelSerializer):
-    schedule = serializers.SerializerMethodField()
-
-    class Meta:
-        model = SportsField
-        fields = [
-            "id",
-            "schedule"
-        ]
-
-    def get_schedule(self, obj):
-        return Booking.objects.filter(field=obj)
-
-
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
@@ -135,7 +121,11 @@ class SportsFieldBookingSerializer(serializers.ModelSerializer):
             for day_time_slot in day_time_slots_data:
                 day = day_time_slot["day"]
                 for time in day_time_slot["time"]:
-                    booking = Booking.objects.create(day=day, time=time, **validated_data)
+                    booking = Booking.objects.create(
+                        day=day,
+                        time=time,
+                        **validated_data
+                    )
                     bookings.append(booking)
 
         self.created_bookings = bookings
