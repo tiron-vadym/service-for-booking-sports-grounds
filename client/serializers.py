@@ -1,5 +1,6 @@
 import string
 import random
+import re
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -39,7 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
         """Create a new user with encrypted password and return it"""
         password = generate_random_password()
         validated_data["password"] = password
-
         user = get_user_model().objects.create_user(
             **validated_data
         )
@@ -72,3 +72,23 @@ class MeSerializer(serializers.ModelSerializer):
             "phone_number",
             "gender",
         ]
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate_old_password(self, value):
+        user = self.context["request"].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect")
+        return value
+
+    def validate_new_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("New password must be at least 8 characters long.")
+        if not re.search(r"[A-Za-z]", value):
+            raise serializers.ValidationError("New password must contain at least one letter.")
+        if not re.search(r"\d", value):
+            raise serializers.ValidationError("New password must contain at least one digit.")
+        return value
