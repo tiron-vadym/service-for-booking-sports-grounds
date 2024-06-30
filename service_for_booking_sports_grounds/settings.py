@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "service",
     "client",
-    "about"
+    "about",
+    "rest_framework.authtoken"
 ]
 
 MIDDLEWARE = [

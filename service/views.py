@@ -16,8 +16,6 @@ from service.serializers import (
     SportsComplexImageSerializer,
     SportsFieldSerializer,
     SportsFieldBookingSerializer,
-    SportsFieldScheduleSerializer,
-    ScheduleRetrieveSerializer,
     BookingSerializer,
     PaymentSerializer
 )
@@ -131,8 +129,6 @@ class SportsFieldViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "booking":
             return SportsFieldBookingSerializer
-        if self.action == "schedule":
-            return SportsFieldScheduleSerializer
         return self.serializer_class
 
     @action(
@@ -149,18 +145,6 @@ class SportsFieldViewSet(ModelViewSet):
         serializer.save(field=sports_field, personal_data=request.user)
         return Response(
             serializer.to_representation(serializer.created_bookings),
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=["GET"])
-    def schedule(self, request, pk=None):
-        sports_field = self.get_object()
-        bookings = sports_field.bookings.all().select_related()
-        return Response(
-            {"schedule": ScheduleRetrieveSerializer(
-                bookings,
-                many=True
-            ).data},
             status=status.HTTP_200_OK
         )
 
