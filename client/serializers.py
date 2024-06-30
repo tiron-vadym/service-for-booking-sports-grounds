@@ -72,3 +72,12 @@ class MeSerializer(serializers.ModelSerializer):
             "phone_number",
             "gender",
         ]
+
+
+class PasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "id",
+            "password"
+        ]
