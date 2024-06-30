@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
 from rest_framework.validators import UniqueTogetherValidator
 from django.db import transaction
 
@@ -198,13 +197,6 @@ class BookingRetrieveSerializer(serializers.ModelSerializer):
             "personal_data"
         ]
         read_only_fields = ["field", "personal_data", "created_at"]
-
-
-class ScheduleRetrieveSerializer(BookingRetrieveSerializer):
-    personal_data = serializers.SlugRelatedField(
-        slug_field="email",
-        queryset=get_user_model().objects.all()
-    )
 
 
 class PaymentSerializer(serializers.ModelSerializer):

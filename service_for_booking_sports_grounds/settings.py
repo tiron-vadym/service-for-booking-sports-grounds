@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     "service",
     "client",
     "about",
-    "dj_rest_auth",
     "rest_framework.authtoken"
 ]
 
