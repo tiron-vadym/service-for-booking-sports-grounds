@@ -87,8 +87,6 @@ class PasswordChangeSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         if len(value) < 8:
             raise serializers.ValidationError("New password must be at least 8 characters long.")
-        if not re.search(r"[A-Za-z]", value):
-            raise serializers.ValidationError("New password must contain at least one letter.")
         if not re.search(r"\d", value):
             raise serializers.ValidationError("New password must contain at least one digit.")
         return value
