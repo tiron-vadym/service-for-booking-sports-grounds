@@ -39,22 +39,26 @@ python manage.py runserver
 - ReDoc Documentation: `/api/doc/redoc/`
 
 ## Client Endpoints
-Register: `/api/client/register/`
-User Details: `/api/client/me/`
-User Schedule: `/api/client/me/schedule/`
-Change Password: `/api/client/me/password/`
-List Users: `/api/client/users/`
-Get Token: `/api/client/token/`
-Refresh Token: `/api/client/token/refresh/`
-Verify Token: `/api/client/token/verify/`
-Logout: `/api/client/logout/`
+- Register: `/api/client/register/`
+- User Details: `/api/client/me/`
+- User Schedule: `/api/client/me/schedule/`
+- Change Password: `/api/client/me/password/`
+- List Users: `/api/client/users/`
+- Get Token: `/api/client/token/`
+- Refresh Token: `/api/client/token/refresh/`
+- Verify Token: `/api/client/token/verify/`
+- Logout: `/api/client/logout/`
 
 ## Service Endpoints
-Sports Complexes: `/api/service/sports-complexes/`
-Upload image: `/api/service/sports-complexes/upload_image`
-Sports Fields: `/api/service/sports-fields/`
-Sports Fields's booking: `/api/service/sports-fields/booking`
-Bookings: `/api/service/bookings/`
-Payments: `/api/service/payments/`
-FAQ: `/api/about/faq/`
-Feedback: `/api/about/feedbacks`
+- Sports Complexes: `/api/service/sports-complexes/`
+- Upload image: `/api/service/sports-complexes/upload_image`
+- Sports Fields: `/api/service/sports-fields/`
+- Sports Fields's booking: `/api/service/sports-fields/booking`
+- Bookings: `/api/service/bookings/`
+- Payments: `/api/service/payments/`
+- FAQ: `/api/about/faq/`
+- Feedback: `/api/about/feedbacks`
+
+## Demo
+
+![homepage.png](homepage.PNG)
